@@ -8,7 +8,7 @@ function login() {
 export {login}
 const escucho = async (req, res) => {
     const { token } = req.body;
-    await query("INSERT * INTO escucha INNER JOIN cancion ON tabla1.columna_comun = tabla2.columna_comun;", [nombre]);
-    res.status(201).json({ nombre });
+    await query("INSERT * INTO escucha as esc INNER JOIN cancion as can ON esc.cancion_ID = can.ID INNER JOIN usuario as us ON esc.usuario_id = us.ID where us.id", [token]);
+    res.status(201).json({ token  });
 };
 export {escucho}
