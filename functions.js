@@ -1,6 +1,8 @@
-function crearusuario(){
-
-}
+const crearusuario = async (req, res) => {
+        const { userid, nombre, password } = req.body;
+        const newpassword = bcrypt.hash(password)
+        await query("INSERT INTO usuario (nombre, password) VALUES ($1, $2)" [nombre, newpassword])
+    }
 export {crearusuario}
 function login() {
     
