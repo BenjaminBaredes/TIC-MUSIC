@@ -1,5 +1,5 @@
 import express from "express";
-import { crearusuario, escucho, login } from "./functions";
+import { crearusuario, escucho, login } from "./functions.js";
 const app = express();
 const port = 3000;
 
@@ -13,7 +13,7 @@ app.get("/", (_, res) => {
 
 // Artistas
 
-app.post("/crearusuario", crearusuario());
+app.post("/crearusuario", crearusuario);
 app.post("/login",login );
 app.post("/escucho", escucho);
 
