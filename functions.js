@@ -55,11 +55,7 @@ export const login = async (req, res) => {
 };
 
 export const escucho = async (req, res) => {
-  // Acepta el token por header Authorization: Bearer <token>
-  // o por body: { "token": "..." }
-  const authHeader = req.headers.authorization;
-  const tokenFromHeader = authHeader && authHeader.split(" ")[1]; // quita "Bearer "
-  const token = tokenFromHeader || req.body.token;
+  const { token } = req.body;
 
   if (!token) {
     return res.status(401).json({ error: "Falta el token" });
