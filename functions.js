@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { query } from "./db.js";
 
 const JWT_SECRET = "secreto_para_la_actividad_123";
