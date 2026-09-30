@@ -1,7 +1,7 @@
 import express from "express";
 import { crearusuario, escucho, login } from "./functions.js";
+
 const app = express();
-const port = 3000;
 
 app.use(express.json());
 
@@ -9,15 +9,15 @@ app.get("/", (_, res) => {
   res.send("API working!");
 });
 
-
-// Artistas
-
 app.post("/crearusuario", crearusuario);
-app.post("/login",login );
+app.post("/login", login);
 app.post("/escucho", escucho);
 
-const server = app.listen(port, () => {
-  console.log(`SpoTICfy API listening at http://localhost:${port}`);
-});
+if (process.env.NODE_ENV !== "production") {
+  const port = 3000;
+  app.listen(port, () => {
+    console.log(`SpoTICfy API listening at http://localhost:${port}`);
+  });
+}
 
-export { app, server };
+export default app;
