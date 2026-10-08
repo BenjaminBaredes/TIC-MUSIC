@@ -1,5 +1,6 @@
 import express from "express";
-import { crearusuario, escucho, login } from "./functions.js";
+import { crearusuario, escucho, login } from "./controllers/functions.js";
+import { verificarToken } from "./middleware/middelware.js";
 
 const app = express();
 
@@ -11,7 +12,7 @@ app.get("/", (_, res) => {
 
 app.post("/crearusuario", crearusuario);
 app.post("/login", login);
-app.post("/escucho", escucho);
+app.post("/escucho",verificarToken, escucho);
 
 if (process.env.NODE_ENV !== "production") {
   const port = 3000;

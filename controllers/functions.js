@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { query } from "./db.js";
+import { query } from "../db.js";
 
 const JWT_SECRET = "secreto_para_la_actividad_123";
 
@@ -55,12 +55,8 @@ export const login = async (req, res) => {
 };
 
 export const escucho = async (req, res) => {
-  const { token } = req.body;
 
-  if (!token) {
-    return res.status(401).json({ error: "Falta el token" });
-  }
-
+  req.usuario=payload
   let payload;
   try {
     payload = jwt.verify(token, JWT_SECRET);
