@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { query } from "../db.js";
 
-const JWT_SECRET = "secreto_para_la_actividad_123";
+export const JWT_SECRET = "secreto_para_la_actividad_123";
 
 export const crearusuario = async (req, res) => {
   const { userid, nombre, password } = req.body;
@@ -29,7 +29,7 @@ export const login = async (req, res) => {
   }
 
   const result = await query(
-    "SELECT id, nombre, password FROM usuario WHERE id = $1",
+    "SELECT id, nombre, password, rol FROM usuario WHERE id = $1",
     [userid]
   );
 
@@ -46,7 +46,7 @@ export const login = async (req, res) => {
   }
 
   const token = jwt.sign(
-    { id: usuario.id, nombre: usuario.nombre },
+    { id: usuario.id, nombre: usuario.nombre, rol: usuario.rol },
     JWT_SECRET,
     { expiresIn: "1h" }
   );
