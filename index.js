@@ -1,6 +1,5 @@
 import express from "express";
-import { crearusuario, escucho, login } from "./controllers/functions.js";
-import { verificarToken } from "./middleware/middelware.js";
+import usuarioRoutes from "./routes/routes.js";
 
 const app = express();
 
@@ -10,9 +9,7 @@ app.get("/", (_, res) => {
   res.send("API working!");
 });
 
-app.post("/crearusuario", crearusuario);
-app.post("/login", login);
-app.post("/escucho",verificarToken, escucho);
+app.use("/", usuarioRoutes);
 
 if (process.env.NODE_ENV !== "production") {
   const port = 3000;

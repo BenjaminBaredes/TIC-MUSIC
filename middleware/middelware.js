@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../controllers/functions.js";
+import { JWT_SECRET } from "../config.js";
 
 export const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(" ")[1]; // "Bearer <token>"
+  const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
     return res.status(401).json({ error: "Falta el token" });
@@ -18,8 +18,8 @@ export const verifyToken = (req, res, next) => {
 };
 
 export const verifyAdmin = (req, res, next) => {
-    if (req.user?.rol !== "A") {
-      return res.status(403).json({ error: "Solo un admin puede hacer esto" });
-    }
-    next();
-  };
+  if (req.user?.rol !== "A") {
+    return res.status(403).json({ error: "Solo un admin puede hacer esto" });
+  }
+  next();
+};

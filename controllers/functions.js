@@ -1,8 +1,4 @@
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import { query } from "../db.js";
-
-export const JWT_SECRET = "secreto_para_la_actividad_123";
+import { crearUsuario, loguear } from "../services/service.js";
 
 export const crearusuario = async (req, res) => {
   const { userid, nombre, password } = req.body;
@@ -11,14 +7,8 @@ export const crearusuario = async (req, res) => {
     return res.status(400).json({ error: "Faltan userid, nombre o password" });
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const result = await query(
-    "INSERT INTO usuario (id, nombre, password) VALUES ($1, $2, $3) RETURNING id, nombre",
-    [userid, nombre, hashedPassword]
-  );
-
-  res.status(201).json(result.rows[0]);
+  const usuario = await crearUsuario(userid, nombre, password);
+  res.status(201).json(usuario);
 };
 
 export const login = async (req, res) => {
@@ -28,49 +18,70 @@ export const login = async (req, res) => {
     return res.status(400).json({ error: "Faltan userid o password" });
   }
 
-  const result = await query(
-    "SELECT id, nombre, password, rol FROM usuario WHERE id = $1",
-    [userid]
-  );
+  const resultado = await loguear(userid, password);
 
-  if (result.rows.length === 0) {
-    return res.status(401).json({ error: "El usuario no existe" });
+  if (resultado.error) {
+    return res.status(401).json({ error: resultado.error });
   }
 
-  const usuario = result.rows[0];
+  res.json({ token: resultado.token });
+};
+export const crearcancion = async (req, res) => {
+  const { nombre } = req.body;
 
-  const ok = await bcrypt.compare(password, usuario.password);
-
-  if (!ok) {
-    return res.status(401).json({ error: "Password incorrecto" });
+  if (!nombre) {
+    return res.status(400).json({ error: "Falta el nombre" });
   }
 
-  const token = jwt.sign(
-    { id: usuario.id, nombre: usuario.nombre, rol: usuario.rol },
-    JWT_SECRET,
-    { expiresIn: "1h" }
-  );
+  const cancion = await crearCancion(nombre);
+  res.status(201).json(cancion);
+};
 
-  res.json({ token });
+export const modificarcancion = async (req, res) => {
+  const { id, nombre } = req.body;
+
+  if (!id || !nombre) {
+    return res.status(400).json({ error: "Faltan id o nombre" });
+  }
+
+  const cancion = await modificarCancion(id, nombre);
+
+  if (!cancion) {
+    return res.status(404).json({ error: "La canción no existe" });
+  }
+
+  res.json(cancion);
+};
+
+export const borrarcancion = async (req, res) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: "Falta el id" });
+  }
+
+  const borrada = await borrarCancion(id);
+
+  if (!borrada) {
+    return res.status(404).json({ error: "La canción no existe" });
+  }
+
+  res.json({ mensaje: "Canción borrada" });
 };
 
 export const escucho = async (req, res) => {
+  const { id } = req.body; // id de la canción
+  const usuarioId = req.user.id; // sale del token, no se pide por parámetro
 
-  req.usuario=payload
-  let payload;
-  try {
-    payload = jwt.verify(token, JWT_SECRET);
-  } catch (err) {
-    return res.status(401).json({ error: "Token inválido o expirado" });
+  if (!id) {
+    return res.status(400).json({ error: "Falta el id de la canción" });
   }
 
-  const result = await query(
-    `SELECT c.id, c.nombre, e.reproducciones
-     FROM escucha e
-     JOIN cancion c ON c.id = e.cancion_id
-     WHERE e.usuario_id = $1`,
-    [payload.id]
-  );
+  const escucha = await registrarEscucha(usuarioId, id);
 
-  res.json(result.rows);
+  if (!escucha) {
+    return res.status(404).json({ error: "La canción no existe" });
+  }
+
+  res.status(201).json(escucha);
 };

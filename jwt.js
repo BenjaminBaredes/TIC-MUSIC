@@ -1,0 +1,1 @@
+export const JWT_SECRET = "secreto_para_la_actividad_123";
