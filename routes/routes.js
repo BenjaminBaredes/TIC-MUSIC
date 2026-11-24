@@ -1,4 +1,4 @@
-import { verifyToken, verifyAdmin } from "../middleware/middelware.js";
+import { verifyToken, verifyAdmin } from "../middleware/middleware.js";
 import {
   crearcancion,
   modificarcancion,
