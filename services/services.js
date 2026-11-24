@@ -67,24 +67,24 @@ export const crearCancion = async (nombre) => {
   };
   
   export const registrarEscucha = async (usuarioId, cancionId) => {
-    const cancion = await query("SELECT id FROM cancion WHERE id = $1", [cancionId]);
-  
-    if (cancion.rows.length === 0) {
-      return null; // la canción no existe
-    }
-  
-    // Si ya escuchó esa canción, suma una reproducción
-    const actualizada = await query(
-      `UPDATE escucha SET reproducciones = reproducciones + 1
-       WHERE usuario_id = $1 AND cancion_id = $2
-       RETURNING usuario_id, cancion_id, reproducciones`,
-      [usuarioId, cancionId]
-    );
-  
-    if (actualizada.rows.length > 0) {
-      return actualizada.rows[0];
-    }
-  
+  const cancion = await query("SELECT id FROM cancion WHERE id = $1", [cancionId]);
+
+  if (cancion.rows.length === 0) {
+    return null; // la canción no existe
+  }
+
+  // Si ya escuchó esa canción, suma una reproducción
+  let escucha;
+  const actualizada = await query(
+    `UPDATE escucha SET reproducciones = reproducciones + 1
+     WHERE usuario_id = $1 AND cancion_id = $2
+     RETURNING usuario_id, cancion_id, reproducciones`,
+    [usuarioId, cancionId]
+  );
+
+  if (actualizada.rows.length > 0) {
+    escucha = actualizada.rows[0];
+  } else {
     // Si es la primera vez, crea el registro
     const nueva = await query(
       `INSERT INTO escucha (usuario_id, cancion_id, reproducciones)
@@ -92,5 +92,18 @@ export const crearCancion = async (nombre) => {
        RETURNING usuario_id, cancion_id, reproducciones`,
       [usuarioId, cancionId]
     );
-    return nueva.rows[0];
-  };
+    escucha = nueva.rows[0];
+  }
+
+  // Ejercicio 6: más de 10 canciones distintas => fan = true
+  const cantidad = await query(
+    "SELECT COUNT(*) AS total FROM escucha WHERE usuario_id = $1",
+    [usuarioId]
+  );
+
+  if (Number(cantidad.rows[0].total) > 10) {
+    await query("UPDATE usuario SET fan = true WHERE id = $1", [usuarioId]);
+  }
+
+  return escucha;
+};
