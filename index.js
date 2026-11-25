@@ -9,7 +9,8 @@ app.get("/", (_, res) => {
   res.send("API working!");
 });
 
-app.use("/", usuarioRoutes);
+
+app.use("/usuario", usuarioRoutes);
 
 if (process.env.NODE_ENV !== "production") {
   const port = 3000;

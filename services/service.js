@@ -3,21 +3,21 @@ import bcrypt from "bcryptjs";
 import { query } from "../db.js";
 import { JWT_SECRET } from "../jwt.js";
 
-export const crearUsuario = async (userid, nombre, password) => {
+export const crearUsuario = async ( nombre, password) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const result = await query(
-    "INSERT INTO usuario (id, nombre, password) VALUES ($1, $2, $3) RETURNING id, nombre, rol, fan",
-    [userid, nombre, hashedPassword]
+    "INSERT INTO usuario (nombre, password) VALUES ( $2, $3) RETURNING nombre, rol",
+    [ nombre, hashedPassword]
   );
 
   return result.rows[0];
 };
 
-export const loguear = async (userid, password) => {
+export const loguear = async (nombre, password) => {
   const result = await query(
-    "SELECT id, nombre, password, rol FROM usuario WHERE id = $1",
-    [userid]
+    "SELECT id, nombre, password, rol FROM usuario WHERE nombre = $1",
+    [nombre]
   );
 
   if (result.rows.length === 0) {

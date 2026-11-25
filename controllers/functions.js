@@ -1,4 +1,4 @@
-import { crearUsuario, loguear } from "../services/service.js";
+import {crearUsuario, loguear, crearCancion,registrarEscucha,borrarCancion,modificarCancion} from "../services/service.js";
 
 export const crearusuario = async (req, res) => {
   const { userid, nombre, password } = req.body;
