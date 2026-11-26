@@ -1,6 +1,6 @@
 import express from "express";
 import usuarioRoutes from "./routes/routes.js";
-
+import { query } from "./db.js";
 const app = express();
 
 app.use(express.json());

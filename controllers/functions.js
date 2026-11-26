@@ -1,24 +1,24 @@
 import {crearUsuario, loguear, crearCancion,registrarEscucha,borrarCancion,modificarCancion} from "../services/service.js";
 
 export const crearusuario = async (req, res) => {
-  const { userid, nombre, password } = req.body;
+  const {  nombre, password } = req.body;
 
-  if (!userid || !nombre || !password) {
+  if ( !nombre || !password) {
     return res.status(400).json({ error: "Faltan userid, nombre o password" });
   }
 
-  const usuario = await crearUsuario(userid, nombre, password);
+  const usuario = await crearUsuario( nombre, password);
   res.status(201).json(usuario);
 };
 
 export const login = async (req, res) => {
-  const { userid, password } = req.body;
+  const { nombre, password } = req.body;
 
-  if (!userid || !password) {
+  if (!nombre || !password) {
     return res.status(400).json({ error: "Faltan userid o password" });
   }
 
-  const resultado = await loguear(userid, password);
+  const resultado = await loguear(nombre, password);
 
   if (resultado.error) {
     return res.status(401).json({ error: resultado.error });

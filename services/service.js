@@ -7,7 +7,7 @@ export const crearUsuario = async ( nombre, password) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const result = await query(
-    "INSERT INTO usuario (nombre, password) VALUES ( $2, $3) RETURNING nombre, rol",
+    "INSERT INTO usuario (nombre, password) VALUES ( $1, $2) RETURNING nombre, rol",
     [ nombre, hashedPassword]
   );
 

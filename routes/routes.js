@@ -14,5 +14,5 @@ router.put("/cancion", verifyToken, verifyAdmin, modificarcancion);
 router.delete("/cancion", verifyToken, verifyAdmin, borrarcancion);
 router.post("/escucho", verifyToken, escucho);
 router.post("/crearusuario", crearusuario )
-router.post ("login", login)
+router.post ("/login", login)
 export default router;
